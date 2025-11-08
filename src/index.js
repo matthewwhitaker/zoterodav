@@ -57,7 +57,6 @@ export default {
 		}
 
 		if (
-			request.method !== "OPTIONS" &&
 			!(await is_authorized(authorization_header, env.USERNAME, env.PASSWORD))
 		) {
 			// Return 401 Unauthorized if credentials are invalid
@@ -105,7 +104,14 @@ export default {
 			return handleFileList(request, env, ctx)
 		}
         if (request.method === "OPTIONS") {
-            return new Response("Not authenticated yet", { status: 200, headers: corsHeaders });
+            return new Response("", { 
+                status: 200,
+                headers: {
+                    "allow": "OPTIONS, DELETE, PUT, POST, GET, PROPFIND",
+                    "dav": "1, 2",
+                    "ms-author-via": "DAV"
+                },
+            });
         }
 		return new Response("Method not allowed", { status: 405, headers: corsHeaders });
 	},
