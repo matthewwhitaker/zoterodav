@@ -8,7 +8,7 @@ import { corsHeaders, is_authorized } from './utils'
 import { dumpCache, handleDeleteFile, handleFileList, handleGetFile, handleMultpleUploads, handlePutFile } from './handlers'
 // MIME type mapping based on file extensions
 
-const AUTH_REALM = 'BOOKO-DAV';
+const AUTH_REALM = 'ZOTERODAV';
 
 
 

@@ -4,7 +4,7 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "bookodav-worker",
+  "name": "zoterodav-worker",
   "main": "src/index.js",
   "compatibility_date": "2025-02-14",
   "observability": {
@@ -13,7 +13,7 @@
    "r2_buckets": [
     {
       "binding": "MY_BUCKET", // Name of the binding in your worker
-      "bucket_name": "bookodav" // Name of your R2 bucket
+      "bucket_name": "zoterodav" // Name of your R2 bucket
     }
   ],
   /**

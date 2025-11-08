@@ -12,21 +12,18 @@
 				align-items: center;
 				justify-content: space-between;
 			}
-			 .w3c {
-				width: 64px;
-			}
 			.image{
 				width: 600px;
 			}
 		</style>
-		<title>Booko-DAV</title>
+		<title>ZOTERODAV</title>
 	</head>
 
 	<body>
 		<header class="container">
 			<nav>
 				<ul class="contrast">
-					<li><strong>Booko-DAV</strong></li>
+					<li><strong>ZOTERODAV</strong></li>
 				</ul>
 				<ul>
 					<li>
@@ -39,149 +36,12 @@
 		</header>
 		<main class="container">
 			<article>
-				<h3>What is this?</h3>
-				<p>
-					Booko-DAV is a play on "books",
-					<a href="https://koreader.rocks/" target="_blank">KOReader</a> and <a href="https://en.wikipedia.org/wiki/WebDAV">WebDAV</a>.
-				</p>
-				<p>
-					It is primarily designed to be a WebDAV server to transfer and store books between your PC, phone, and e-reader (in my case a
-					jailbroken Kindle). It is self-hostable and <strong>mostly free</strong> <em>(10GB to be exact)</em>.
-					<a href="#pricing">See Pricing</a>.
-				</p>
-			</article>
-
-			<article>
-				<h3>Why is this?</h3>
-				<p>
-					For fun. There are more WebDAV services out there, but I wanted to create my own version specifically geared towards the ebook
-					community, with easy deployment and low cost.
-				</p>
-			</article>
-			<article>
-				<h3>How to use this?</h3>
-				<h4>Requirements: A Cloudflare account, a GitHub account, a mobile device or PC, and a credit card.</h4>
-				<p>
-					<em>* Note: All links below open in new tabs for convenience *</em>
-				</p>
-				<ol>
-					<li>
-						<h5>Set Up Cloudflare Account</h5>
-						<ul>
-							<li>
-								Go to <a href="https://dash.cloudflare.com/login" target="_blank">Cloudflare Dashboard</a> and create an account (Google
-								Sign-In available). If you have an account, log in.
-							</li>
-							<li>In your dashboard sidebar, go to <strong>R2 Object Storage</strong>. Complete billing details and submit.</li>
-							<li>Under R2 Object Storage, click <strong>+ Create Bucket</strong></li>
-							<li>
-								<strong>Name your bucket <u>bookodav</u></strong> (case-sensitive)
-							</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350922/Screenshot_2025-04-23_000023_jbdwnb.png" alt="bucket example">
-							</li>
-							<li>Keep default options and create bucket.</li>
-							<li>Go to <a target="_blank" href="https://dash.cloudflare.com/profile/api-tokens">API Tokens</a> via profile menu.</li>
-							<li>
-								Click <strong><u>Create Token</u></strong> and select <strong>Edit Cloudflare Workers</strong> template.
-							</li>
-							<li>Select your account in dropdown under Account Resources and All Zones under Zone Resources.</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350938/Screenshot_2025-04-23_000214_mq4jzd.png" alt="token example">
-							</li>
-							<li>Create token and save it. Save your Account ID from dashboard URL (https://dash.cloudflare.com/{AccountId}/home).</li>
-						</ul>
-					</li>
-					<li>
-						<h5>GitHub Account</h5>
-						<ul>
-							<li>Create/login to <a target="_blank" href="https://github.com/">GitHub</a></li>
-							<li>Visit <a target="_blank" href="https://github.com/Joshuajrodrigues/bookodav">repository</a></li>
-							<li>Fork it by clicking this</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350980/Screenshot_2025-04-23_003503_enhe6n.png" alt="fork">
-							</li>
-							<li>Go to settings =&gt; secrets &amp; variables =&gt; actions</li>
-							<li>Click on new repository secret</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350950/Screenshot_2025-04-23_002507_hw0ugn.png" alt="secret">
-							</li>
-							<li>add name as CF_API_TOKEN</li>
-							<li>in the Secret * section paste in the api key you created earlier, click Add Secret</li>
-							<li>go to actions and enable workflows</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350953/Screenshot_2025-04-23_002632_zuevrs.png" alt="actions">
-							</li>
-							<li>
-								go to deploy and click run wrokflows
-							</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350959/Screenshot_2025-04-23_002655_c98byf.png" alt="workflow">
-							</li>
-							<li>
-								if you click on actions again you should see this
-							</li>
-							<li><img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350957/Screenshot_2025-04-23_002741_ssiydj.png" alt="workflow done"></li>
-						</ul>
-					</li>
-					<li>
-						<h5>Access</h5>
-						<ul>
-							<li>In Cloudflare Dashboard, go to Compute → Workers → <b>bookodav-worker</b>.</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350965/Screenshot_2025-04-23_002806_hww0vf.png" alt="acess">
-							</li>
-							<li>Under Settings → Variables, Select Type as SECRET, add USERNAME and PASSWORD (case-sensitive) and deploy.</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350990/Screenshot_2025-04-23_004933_nyxilz.png" alt="username">
-							</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350991/Screenshot_2025-04-23_004847_msorqy.png" alt="password">
-							</li>
-							<li>Find your access URL at workers.dev domain (e.g., bookodav-worker.username.workers.dev/dav).</li>
-							<li>
-								<img class="image" src="https://res.cloudinary.com/dt1unishx/image/upload/v1745350977/Screenshot_2025-04-23_002855_squ7f8.png" alt="acess">
-							</li>
-						</ul>
-					</li>
-				</ol>
-			</article>
-			<article>
-				<h3>Important Links</h3>
-				<ol>
-					<li>
-						<a target="_blank" href="http://dash.cloudflare.com">Cloudflare Dashboard</a>
-						<p>Monitor storage, requests, and billing. Preferred over built-in docs table.</p>
-					</li>
-					<li id="pricing">
-						<a target="_blank" href="https://developers.cloudflare.com/r2/pricing/">Cloudflare R2 Pricing</a>
-						<p>10GB free storage. Heavy caching reduces bills but may cause minor inconsistencies.</p>
-					</li>
-					<li>
-						<a target="_blank" href="https://developers.cloudflare.com/workers/platform/pricing/">Cloudflare Workers Pricing</a>
-						<p>100,000 daily requests included (uploads, downloads, deletes).</p>
-					</li>
-					<li>
-						<p>
-							Booko-DAV uses Cloudflare Workers technology.
-							<a target="_blank" href="https://developers.cloudflare.com/workers/reference/how-workers-works/">
-								Learn more about Workers.
-							</a>
-						</p>
-					</li>
-				</ol>
-			</article>
-
-			<footer class="footer">
-				<span> <span id="year"></span> © Joshua Rodrigues </span>
-				<a href="https://html5.validator.nu/?doc=https%3A%2F%2Fbookodav.joshuarodrigues.dev">
-					<img
-						loading="lazy"
-						class="w3c"
-						src="https://github.com/bradleytaunt/html5-valid-badge/blob/master/html5-validator-badge-blue.png?raw=true"
-						alt="HTML5 Valid"
-					>
-				</a>
+            <p>
+                The service is running.
+            </p>
+            </article>
+            <footer class="footer">
+				<span> <span id="year"></span> &copy; Joshua Rodrigues; Matthew Whitaker </span>
 			</footer>
 		</main>
 		<script>

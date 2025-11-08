@@ -5,7 +5,7 @@ export const mimeTypes = {
 	mobi: "application/x-mobipocket-ebook",
 	cbr: "application/x-cbr", // Comic Book RAR
 	cbz: "application/x-cbz", // Comic Book ZIP
-
+    html: "text/html",
 	// Images
 	jpg: "image/jpeg",
 	jpeg: "image/jpeg",
