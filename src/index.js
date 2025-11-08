@@ -1,8 +1,6 @@
 
 import html from '../src/public/dash/index.html'
-import upload from '../src/public/dash/upload.html'
 import list from '../src/public/dash/list.html'
-import instructions from '../src/public/dash/wiki.html'
 import notfoundpage from '../src/public/dash/404.html'
 import { corsHeaders, is_authorized } from './utils'
 import { dumpCache, handleDeleteFile, handleFileList, handleGetFile, handleMultpleUploads, handlePutFile } from './handlers'
@@ -17,12 +15,8 @@ function handleUiRouting(path) {
 	switch (path) {
 		case "/":
 			return html
-		case "/dav/upload":
-			return upload
 		case "/dav/list":
 			return list
-		case "/dav":
-			return instructions;
 		default:
 			return notfoundpage;
 	}
