@@ -104,6 +104,9 @@ export default {
 		if (request.method === "PROPFIND") {
 			return handleFileList(request, env, ctx)
 		}
+        if (request.method === "OPTIONS") {
+            return new Response("Not authenticated yet", { status: 200, headers: corsHeaders });
+        }
 		return new Response("Method not allowed", { status: 405, headers: corsHeaders });
 	},
 };
