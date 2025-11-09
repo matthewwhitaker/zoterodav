@@ -40,6 +40,9 @@ async function* listAll(bucket, prefix, isRecursive = false) {
             cursor: cursor,
             include: ['httpMetadata', 'customMetadata'],
         });
+        if(r2_objects === undefined) {
+            break;
+        }
 
         for (let object of r2_objects.objects) {
             yield object;
@@ -163,6 +166,9 @@ export async function handle_delete(request, env) {
             cursor = undefined;
         do {
             r2_objects = await bucket.list({ cursor: cursor });
+            if(r2_objects === undefined) {
+                break;
+            }
             let keys = r2_objects.objects.map((object) => object.key);
             if (keys.length > 0) {
                 await bucket.delete(keys);
@@ -192,6 +198,9 @@ export async function handle_delete(request, env) {
             prefix: resource_path + '/',
             cursor: cursor,
         });
+        if(r2_objects === undefined) {
+            break;
+        }
         let keys = r2_objects.objects.map((object) => object.key);
         if (keys.length > 0) {
             await bucket.delete(keys);

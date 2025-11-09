@@ -89,7 +89,7 @@ export default {
 
         // Set CORS headers
         response.headers.set('Access-Control-Allow-Origin', request.headers.get('Origin') ?? '*');
-        response.headers.set('Access-Control-Allow-Methods', SUPPORT_METHODS.join(', '));
+        response.headers.set('Access-Control-Allow-Methods', SUPPORTED_METHODS.join(', '));
         response.headers.set(
             'Access-Control-Allow-Headers',
             ['authorization', 'content-type', 'depth', 'overwrite', 'destination', 'range'].join(', '),
