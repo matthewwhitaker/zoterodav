@@ -1,25 +1,70 @@
-
-import html from '../src/public/dash/index.html'
-import list from '../src/public/dash/list.html'
-import notfoundpage from '../src/public/dash/404.html'
-import { corsHeaders, is_authorized } from './utils'
-import { dumpCache, handleDeleteFile, handleFileList, handleGetFile, handleMultpleUploads, handlePutFile } from './handlers'
-// MIME type mapping based on file extensions
+import { handle_head, handle_get, handle_put, handle_delete, handle_mkcol, handle_propfind, handle_proppatch, handle_copy, handle_move } from "./handlers";
 
 const AUTH_REALM = 'ZOTERODAV';
+const DAV_CLASS = '1, 3';
+const SUPPORTED_METHODS = ['OPTIONS', 'PROPFIND', 'PROPPATCH', 'MKCOL', 'GET', 'HEAD', 'PUT', 'DELETE', 'COPY', 'MOVE'];
 
+async function dispatch_handler(request, env, ctx) {
+    switch (request.method) {
+        case 'OPTIONS': {
+            return new Response(null, {
+                status: 204,
+                headers: {
+                    Allow: SUPPORTED_METHODS.join(', '),
+                    DAV: DAV_CLASS,
+                }
+            })
+        }
+        case 'HEAD': {
+            return await handle_head(request, env, ctx);
+        }
+        case 'GET': {
+            return await handle_get(request, env, ctx);
+        }
+        case 'PUT': {
+            return await handle_put(request, env, ctx);
+        }
+        case 'DELETE': {
+            return await handle_delete(request, env, ctx);
+        }
+        case 'MKCOL': {
+            return await handle_mkcol(request, env, ctx);
+        }
+        case 'PROPFIND': {
+            return await handle_propfind(request, env, ctx);
+        }
+        case 'PROPPATCH': {
+            return await handle_proppatch(request, env, ctx);
+        }
+        case 'COPY': {
+            return await handle_copy(request, env, ctx);
+        }
+        case 'MOVE': {
+            return await handle_move(request, env, ctx);
+        }
+        default: {
+            return new Response('Method Not Allowed', {
+                status: 405,
+                headers: {
+                    Allow: SUPPORTED_METHODS.join(', '),
+                    DAV: DAV_CLASS,
+                },
+            });
+        }
+    }
+}
 
+function is_authorized(authorization_header, username, password) {
+    const encoder = new TextEncoder();
 
-function handleUiRouting(path) {
+    const header = encoder.encode(authorization_header);
+    const expected = encoder.encode(`Basic ${btoa(`${username}:${password}`)}`);
 
-	switch (path) {
-		case "/":
-			return html
-		case "/dav/list":
-			return list
-		default:
-			return notfoundpage;
-	}
+    if (header.byteLength !== expected.byteLength) {
+        return false; // Length mismatch
+    }
+
+    return crypto.subtle.timingSafeEqual(header, expected)
 }
 
 export default {
@@ -27,38 +72,10 @@ export default {
 		// Extract the Authorization header
 		const authorization_header = request.headers.get("Authorization") || "";
 
-		const url = new URL(request.url);
-		let path = url.pathname;
-
-		if (request.method === "GET" && path === "/favicon.ico") {
-			// Fetch favicon from R2 bucket
-			const favicon = './favicon.ico'
-
-			if (!favicon) {
-				return new Response("Favicon not found", { status: 404 });
-			}
-
-			return new Response(favicon.body, {
-				headers: {
-					"Content-Type": "image/x-icon",
-					"Cache-Control": "public, max-age=604800" // 1 week
-				}
-			});
-		}
-
-		if (request.method === "GET" && path === "/") {
-			// Fetch favicon from R2 bucket
-			return new Response(handleUiRouting(path), {
-				headers: {
-					"Content-Type": "text/html",
-					"Cache-Control": "public, max-age=604800"
-				},
-			});
-		}
-
 		if (
-			!(await is_authorized(authorization_header, env.USERNAME, env.PASSWORD))
-		) {
+            request.method !== 'OPTIONS' &&
+            !is_authorized(authorization_header, env.USERNAME, env.PASSWORD)
+        ) {
 			// Return 401 Unauthorized if credentials are invalid
 			return new Response("Unauthorized", {
 				status: 401,
@@ -68,51 +85,24 @@ export default {
 			});
 		}
 
+        let response = await dispatch_handler(request, env, ctx);
 
-		// dashboard
+        // Set CORS headers
+        response.headers.set('Access-Control-Allow-Origin', request.headers.get('Origin') ?? '*');
+        response.headers.set('Access-Control-Allow-Methods', SUPPORT_METHODS.join(', '));
+        response.headers.set(
+            'Access-Control-Allow-Headers',
+            ['authorization', 'content-type', 'depth', 'overwrite', 'destination', 'range'].join(', '),
+        );
+        response.headers.set(
+            'Access-Control-Expose-Headers',
+            ['content-type', 'content-length', 'dav', 'etag', 'last-modified', 'location', 'date', 'content-range'].join(
+                ', ',
+            ),
+        );
+        response.headers.set('Access-Control-Allow-Credentials', 'false');
+        response.headers.set('Access-Control-Max-Age', '86400');
 
-		if (request.method === "GET" && path.includes("/dav")) {
-			return new Response(handleUiRouting(path), {
-				headers: {
-					"Content-Type": "text/html",
-					"Cache-Control": "public, max-age=604800"
-				},
-			});
-
-		}
-
-		if (request.method === "GET" && path === "/dumpcache") {
-			return dumpCache(request, env, ctx);
-		}
-
-		if (request.method === "PUT") {
-			return handlePutFile(request, env, ctx)
-		}
-
-		if (request.method === 'DELETE') {
-			return handleDeleteFile(request, env, ctx);
-		}
-
-		// Upload multiple files via POST /upload
-		if (request.method === "POST" && path === "/upload") {
-			return handleMultpleUploads(request, env, ctx)
-		}
-		if (request.method === "GET") {
-			return handleGetFile(request, env, ctx)
-		}
-		if (request.method === "PROPFIND") {
-			return handleFileList(request, env, ctx)
-		}
-        if (request.method === "OPTIONS") {
-            return new Response("", { 
-                status: 200,
-                headers: {
-                    "allow": "OPTIONS, DELETE, PUT, POST, GET, PROPFIND",
-                    "dav": "1, 2",
-                    "ms-author-via": "DAV"
-                },
-            });
-        }
-		return new Response("Method not allowed", { status: 405, headers: corsHeaders });
+        return response;
 	},
 };
