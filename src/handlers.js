@@ -32,9 +32,10 @@ function calcContentRange(object) {
 }
 
 async function* listAll(bucket, prefix, isRecursive = false) {
-    let cursor = undefined;
+    let r2_objects,
+        cursor = undefined;
     do {
-        let r2_objects = await bucket.list({
+        r2_objects = await bucket.list({
             prefix: prefix,
             delimiter: isRecursive ? undefined : '/',
             cursor: cursor,
