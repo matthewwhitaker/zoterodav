@@ -1,7 +1,5 @@
-import { corsHeaders, mimeTypes } from './utils'
-
-export async function handle_head(request, env, ctx) {
-    let response = await handle_get(request, env, ctx);
+export async function handle_head(request, env) {
+    let response = await handle_get(request, env);
     return new Response(null, {
         status: response.status,
         statusText: response.statusText,
@@ -53,7 +51,7 @@ async function* listAll(bucket, prefix, isRecursive = false) {
     } while (r2_objects.truncated);
 }
 
-export async function handle_get(request, env, ctx) {
+export async function handle_get(request, env) {
     let resource_path = make_resource_path(request);
 
     if(request.url.endsWith('/')) {
@@ -131,7 +129,7 @@ export async function handle_get(request, env, ctx) {
     }
 }
 
-export async function handle_put(request, env, ctx) {
+export async function handle_put(request, env) {
     if (request.url.endsWith('/')) {
         return new Response('Method Not Allowed', { status: 405 });
     }
@@ -156,7 +154,7 @@ export async function handle_put(request, env, ctx) {
     return new Response('', { status: 201 });
 }
 
-export async function handle_delete(request, env, ctx) {
+export async function handle_delete(request, env) {
     let resource_path = make_resource_path(request);
     let bucket = env.MY_BUCKET;
 
@@ -207,7 +205,7 @@ export async function handle_delete(request, env, ctx) {
     return new Response(null, { status: 204 });
 }
 
-export async function handle_mkcol(request, env, ctx) {
+export async function handle_mkcol(request, env) {
     let resource_path = make_resource_path(request);
     let bucket = env.MY_BUCKET;
 
@@ -290,7 +288,7 @@ function generate_propfind_response(object) {
 	</response>`;
 }
 
-export async function handle_propfind(request, env, ctx) {
+export async function handle_propfind(request, env) {
     let resource_path = make_resource_path(request);
     let bucket = env.MY_BUCKET;
 
@@ -346,7 +344,7 @@ export async function handle_propfind(request, env, ctx) {
     });
 }
 
-export async function handle_proppatch(request, env, ctx) {
+export async function handle_proppatch(request, env) {
     const resource_path = make_resource_path(request);
     const bucket = env.MY_BUCKET;
 
@@ -459,7 +457,7 @@ export async function handle_proppatch(request, env, ctx) {
     });
 }
 
-export async function handle_copy(request, env, ctx) {
+export async function handle_copy(request, env) {
     let resource_path = make_resource_path(request);
     let bucket = env.MY_BUCKET;
     let dont_overwrite = request.headers.get('Overwrite') === 'F';
@@ -555,7 +553,7 @@ export async function handle_copy(request, env, ctx) {
     }
 }
 
-export async function handle_move(request, env, ctx) {
+export async function handle_move(request, env) {
     let resource_path = make_resource_path(request);
     let bucket = env.MY_BUCKET;
     let overwrite = request.headers.get('Overwrite') === 'T';

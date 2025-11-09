@@ -4,7 +4,7 @@ const AUTH_REALM = 'ZOTERODAV';
 const DAV_CLASS = '1, 3';
 const SUPPORTED_METHODS = ['OPTIONS', 'PROPFIND', 'PROPPATCH', 'MKCOL', 'GET', 'HEAD', 'PUT', 'DELETE', 'COPY', 'MOVE'];
 
-async function dispatch_handler(request, env, ctx) {
+async function dispatch_handler(request, env) {
     switch (request.method) {
         case 'OPTIONS': {
             return new Response(null, {
@@ -16,31 +16,31 @@ async function dispatch_handler(request, env, ctx) {
             })
         }
         case 'HEAD': {
-            return await handle_head(request, env, ctx);
+            return await handle_head(request, env);
         }
         case 'GET': {
-            return await handle_get(request, env, ctx);
+            return await handle_get(request, env);
         }
         case 'PUT': {
-            return await handle_put(request, env, ctx);
+            return await handle_put(request, env);
         }
         case 'DELETE': {
-            return await handle_delete(request, env, ctx);
+            return await handle_delete(request, env);
         }
         case 'MKCOL': {
-            return await handle_mkcol(request, env, ctx);
+            return await handle_mkcol(request, env);
         }
         case 'PROPFIND': {
-            return await handle_propfind(request, env, ctx);
+            return await handle_propfind(request, env);
         }
         case 'PROPPATCH': {
-            return await handle_proppatch(request, env, ctx);
+            return await handle_proppatch(request, env);
         }
         case 'COPY': {
-            return await handle_copy(request, env, ctx);
+            return await handle_copy(request, env);
         }
         case 'MOVE': {
-            return await handle_move(request, env, ctx);
+            return await handle_move(request, env);
         }
         default: {
             return new Response('Method Not Allowed', {
@@ -85,7 +85,7 @@ export default {
 			});
 		}
 
-        let response = await dispatch_handler(request, env, ctx);
+        let response = await dispatch_handler(request, env);
 
         // Set CORS headers
         response.headers.set('Access-Control-Allow-Origin', request.headers.get('Origin') ?? '*');
